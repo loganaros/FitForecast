@@ -1,1 +1,201 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f4f8;
+    font-family: 'Arial', sans-serif;
+    flex-direction: column;
+}
 
+.weather-card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    max-width: 1000px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.header-info h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+    padding-left: 10px;
+}
+
+.header-info h3 {
+    color: #777;
+    font-size: 16px;
+    margin: 0;
+}
+
+.weather-icon {
+    width: 80px;
+    height: 80px;
+    margin: 20px 0;
+    float: right;
+}
+
+.temperature {
+    font-size: 48px;
+    font-weight: bold;
+    color: #ff7e67;
+    margin: 10px 0;
+    padding-left: 10px;
+}
+
+.description {
+    font-size: 18px;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.additional-info {
+    display: flex;
+    justify-content: space-around;
+    color: #555;
+}
+
+.additional-info div {
+    text-align: center;
+}
+
+.additional-info span {
+    display: block;
+    font-weight: bold;
+}
+
+.outfit-recommendation {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+.outfit-recommendation div {
+    text-align: left;
+}
+
+.outfit-recommendation span {
+    display: block;
+    font-weight: bold;
+    text-align: center;
+}
+
+.outfit-recommendation p {
+    font-size: 14px;
+}
+
+.outfit-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.content {
+    flex: 3;
+}
+
+.img-container {
+    flex: 2;
+}
+
+.input-container {
+    width: 100%;
+    margin-top: 20px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    padding: 30px;
+}
+
+.text-inputs-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    gap: 10px;
+}
+
+.form-group {
+    margin-top: 10px;
+}
+
+.input-container input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+.input-container input:focus {
+    border-color: #5d9cec;
+    box-shadow: 0 0 5px rgba(93, 156, 236, 0.4);
+}
+
+.input-container label {
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 12px;
+    color: #333;
+}
+
+.outfit-text {
+    width: 100%;
+}
+
+.skeleton {
+    background-color: #e0e0e0;
+    background-image: linear-gradient(90deg,
+            #e0e0e0 25%,
+            #f0f0f0 50%,
+            #e0e0e0 75%);
+    background-size: 400% 100%;
+    animation: shimmer 3.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -400% 0;
+    }
+
+    100% {
+        background-position: 400% 0;
+    }
+}
+
+.skeleton-text {
+    width: 100%;
+    height: 16px;
+    margin: 5px 0;
+}
+
+.skeleton-image {
+    width: 50%;
+    height: 100%;
+    margin-bottom: 10px;
+}
+
+.hidden {
+    display: none;
+}
