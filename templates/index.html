@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fit Forecast</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function showSkeleton() {
+            document.getElementById('loading-skeleton').classList.remove('hidden');
+            document.getElementById('weather-card-content').classList.add('hidden');
+        }
+
+        function hideSkeleton() {
+            document.getElementById('loading-skeleton').classList.add('hidden');
+            document.getElementById('weather-card-content').classList.remove('hidden');
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', showSkeleton);
+        });
+    </script>
+</head>
+
+<body>
+    <form method="post" action="/" class="input-container">
+        {{ form.hidden_tag() }}
+        <div class="text-inputs-container">
+            <div>
+                {{ form.location.label }}
+                {{ form.location }}
+            </div>
+            <div>
+                {{ form.vibe.label }}
+                {{ form.vibe }}
+            </div>
+            <div>
+                {{ form.gender.label }}
+                {{ form.gender }}
+            </div>
+        </div>
+        <div class="form-group">
+            {{ form.submit(class_='btn btn-primary') }}
+        </div>
+    </form>
+    <!-- Skeleton Loader -->
+    <div id="loading-skeleton" class="weather-card hidden">
+        <div class="content">
+            <div class="header-info">
+                <div class="skeleton skeleton-text" style="width: 30%; height: 24px;"></div>
+                <div class="skeleton skeleton-text" style="width: 50%; height: 16px;"></div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="skeleton skeleton-text" style="width: 20%; height: 48px;"></div>
+                <div class="skeleton skeleton-text" style="width: 48px; height: 48px;"></div>
+            </div>
+            <div class="additional-info">
+                <div class="skeleton skeleton-text" style="width: 10%; height: 16px;"></div>
+                <div class="skeleton skeleton-text" style="width: 10%; height: 16px;"></div>
+                <div class="skeleton skeleton-text" style="width: 10%; height: 16px;"></div>
+            </div>
+            <div class="additional-info">
+                <div class="skeleton skeleton-text" style="width: 30%; height: 16px;"></div>
+                <div class="skeleton skeleton-text" style="width: 30%; height: 16px;"></div>
+                <div class="skeleton skeleton-text" style="width: 30%; height: 16px;"></div>
+            </div>
+            <div class="outfit-recommendation">
+                <div>
+                    <div class="skeleton skeleton-text" style="width: 90%;"></div>
+                    <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                    <div class="skeleton skeleton-text" style="width: 70%;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="skeleton skeleton-image"></div>
+    </div>
+    <!-- Actual Content -->
+    <div id="weather-card-content" class="weather-card">
+        <div class="content">
+            <div class="header-info">
+                <h2>{{ city_name }}</h2>
+                <h3><i>{{ region }}, {{ country }}</i></h3>
+            </div>
+            <img class="weather-icon" src="{{ icon_url }}" alt="Weather Icon">
+            <div class="temperature">{{ temperature }}°F</div>
+            <div class="description">{{ weather_description }}</div>
+            <div class="additional-info">
+                <div>
+                    <span>{{ humidity }}%</span>
+                    Humidity
+                </div>
+                <div>
+                    <span>{{ rain_chance }}%</span>
+                    Chance of Rain
+                </div>
+                <div>
+                    <span>{{ wind_speed }} mph</span>
+                    Wind Speed
+                </div>
+            </div>
+            <div class="outfit-recommendation">
+                <div class="outfit-text">
+                    <span>Your Fit Forecast</span>
+                    {% for key, value in outfit['outfit'].items() %}
+                    <p>
+                        <strong>{{ value['item'] }}</strong>: {{ value['description'] }}
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="img-container">
+            <img class="outfit-image" src="{{ image_url }}">
+        </div>
+    </div>
+</body>
+
+</html>
