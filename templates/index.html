@@ -6,8 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fit Forecast</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" id="light-mode" href="{{ url_for('static', filename='light_mode.css') }}">
+    <link rel="stylesheet" id="dark-mode" href="{{ url_for('static', filename='dark_mode.css') }}" disabled>
     <script>
+        // Function to show skeleton loader
         function showSkeleton() {
             document.getElementById('loading-skeleton').classList.remove('hidden');
             document.getElementById('weather-card-content').classList.add('hidden');
@@ -19,6 +21,38 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+            const lightMode = document.getElementById('light-mode');
+            const darkMode = document.getElementById('dark-mode');
+            const toggleCheckbox = document.getElementById('toggle-dark-mode');
+
+            // Function to toggle between light and dark mode
+            function toggleDarkMode() {
+                setTimeout(() => {
+                    if (toggleCheckbox.checked) {
+                        // Switch to Dark Mode
+                        darkMode.disabled = false;
+                        lightMode.disabled = true;
+                        localStorage.setItem('theme', 'dark');
+                    } else {
+                        // Switch to Light Mode
+                        darkMode.disabled = true;
+                        lightMode.disabled = false;
+                        localStorage.setItem('theme', 'light');
+                    }
+                }, 300);
+            }
+
+            // Load saved theme preference on page load
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                darkMode.disabled = false;
+                lightMode.disabled = true;
+                toggleCheckbox.checked = true;
+            }
+
+            // Add change event to the checkbox to toggle modes
+            toggleCheckbox.addEventListener('change', toggleDarkMode);
+
             const form = document.querySelector('form');
             form.addEventListener('submit', showSkeleton);
         });
@@ -26,7 +60,16 @@
 </head>
 
 <body>
-    <h1>Fit Forecast</h1>
+    <div>
+        <h1>Fit Forecast</h1>
+        <!-- <button class="dark-mode-button" id="toggle-dark-mode" onclick="toggleDarkMode()">Switch to Dark Mode</button> -->
+        <div class="switch">
+            <label class="theme-switch" for="toggle-dark-mode">
+                <input type="checkbox" id="toggle-dark-mode" />
+                <div class="slider round"></div>
+            </label>
+        </div>
+    </div>
     <form method="post" action="/" class="input-container">
         {{ form.hidden_tag() }}
         <div class="text-inputs-container">
@@ -119,7 +162,7 @@
     </div>
 </body>
 <footer>
-    Fit Forecast / github.com/loganaros
+    Logan Aros | Fit Forecast | <a href="github.com/loganaros">github.com/loganaros</a>
 </footer>
 
 </html>
