@@ -5,6 +5,7 @@ import requests, openai, re, json
 from secret_keys import API_KEY, GPT_KEY, SECRET_KEY
 
 app = Flask(__name__)
+app.app_context().push()
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://logabeast11:wAIcCg25vqQRpypkaeNv5UDpWSR4P8MR@dpg-csaqv4qj1k6c73cs4sd0-a/ffdb_zvkc"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
