@@ -2,12 +2,9 @@ from flask import Flask, request, render_template, redirect, session, flash
 from forms import CustomizeForm, RegisterForm, LoginForm
 from models import connect_db, db, User
 import requests, openai, re, json
-from secret_keys import API_KEY, GPT_KEY, SECRET_KEY
+from secret_keys import API_KEY, GPT_KEY, SECRET_KEY, EXTERNAL_URI, INTERNAL_URI
 
-EXTERNAL_URI = "postgresql://logabeast11:wAIcCg25vqQRpypkaeNv5UDpWSR4P8MR@dpg-csaqv4qj1k6c73cs4sd0-a.oregon-postgres.render.com/ffdb_zvkc"
-INTERNAL_URI = "postgresql://logabeast11:wAIcCg25vqQRpypkaeNv5UDpWSR4P8MR@dpg-csaqv4qj1k6c73cs4sd0-a/ffdb_zvkc"
-
-DATABASE_URI = EXTERNAL_URI
+DATABASE_URI = INTERNAL_URI
 
 app = Flask(__name__)
 app.app_context().push()
