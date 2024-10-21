@@ -131,3 +131,6 @@ def login():
         pwd = form.password.data
 
         user = User.authenticate(username, pwd)
+
+    else:
+        return render_template("login.html", form=form)
