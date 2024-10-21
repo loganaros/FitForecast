@@ -1,10 +1,17 @@
-from flask import Flask, request, render_template, redirect
-from forms import CustomizeForm
+from flask import Flask, request, render_template, redirect, session, flash
+from forms import CustomizeForm, RegisterForm, LoginForm
+from models import connect_db, db, User
 import requests, openai, re, json
 from secret_keys import API_KEY, GPT_KEY, SECRET_KEY
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://logabeast11:wAIcCg25vqQRpypkaeNv5UDpWSR4P8MR@dpg-csaqv4qj1k6c73cs4sd0-a/ffdb_zvkc"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_ECHO"] = True
 app.config['SECRET_KEY'] = SECRET_KEY
+
+connect_db(app)
+db.create_all()
 
 openai.api_key = GPT_KEY
 
@@ -90,3 +97,36 @@ def home():
         return render_template("index.html", form=form, image_url=image_url, region=region, country=country, wind_speed=wind_speed, humidity=humidity, temperature=temperature, city_name=city_name, icon_url=icon_url, rain_chance=rain_chance, outfit=outfit_json)
     
     return render_template("index.html", form=form, outfit=example_outfit, region="Somewhere", country="USA", wind_speed=0, humidity=0, temperature=0, city_name="Somewhere", rain_chance=0, icon_url="https://cdn.weatherapi.com/weather/64x64/day/113.png")
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    # registration
+
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        pwd = form.password.data
+
+        user = User.register(username, pwd)
+        db.session.add(user)
+        db.session.commit()
+
+        session["user_id"] = user.id
+
+        return redirect("/")
+    
+    else:
+        return render_template("register.html", form=form)
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    # login
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        pwd = form.password.data
+
+        user = User.authenticate(username, pwd)
