@@ -7,7 +7,7 @@ from secret_keys import API_KEY, GPT_KEY, SECRET_KEY
 EXTERNAL_URI = "postgresql://logabeast11:wAIcCg25vqQRpypkaeNv5UDpWSR4P8MR@dpg-csaqv4qj1k6c73cs4sd0-a.oregon-postgres.render.com/ffdb_zvkc"
 INTERNAL_URI = "postgresql://logabeast11:wAIcCg25vqQRpypkaeNv5UDpWSR4P8MR@dpg-csaqv4qj1k6c73cs4sd0-a/ffdb_zvkc"
 
-DATABASE_URI = INTERNAL_URI
+DATABASE_URI = EXTERNAL_URI
 
 app = Flask(__name__)
 app.app_context().push()
