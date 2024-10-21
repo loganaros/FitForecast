@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="stylesheet" id="light-mode" href="{{ url_for('static', filename='light_mode.css') }}">
+    <link rel="stylesheet" id="dark-mode" href="{{ url_for('static', filename='dark_mode.css') }}" disabled>
 </head>
 <body>
+    <div class="container" style="margin-top: 2em;">
+        {% for error in form.username.errors %}
+        <div class="alert">
+            {{ error }}
+        </div>
+        {% endfor %}
+    </div>
     <div>
+        <h2>Login</h2>
         <form method="post" action="/login" class="input-container">
             {{ form.hidden_tag() }}
-            <div class="text-inputs-container">
+            <div class="login-inputs-container">
                 <div>
                     {{ form.username.label }}
                     {{ form.username }}

@@ -4,9 +4,14 @@ from models import connect_db, db, User
 import requests, openai, re, json
 from secret_keys import API_KEY, GPT_KEY, SECRET_KEY
 
+EXTERNAL_URI = "postgresql://logabeast11:wAIcCg25vqQRpypkaeNv5UDpWSR4P8MR@dpg-csaqv4qj1k6c73cs4sd0-a.oregon-postgres.render.com/ffdb_zvkc"
+INTERNAL_URI = "postgresql://logabeast11:wAIcCg25vqQRpypkaeNv5UDpWSR4P8MR@dpg-csaqv4qj1k6c73cs4sd0-a/ffdb_zvkc"
+
+DATABASE_URI = INTERNAL_URI
+
 app = Flask(__name__)
 app.app_context().push()
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://logabeast11:wAIcCg25vqQRpypkaeNv5UDpWSR4P8MR@dpg-csaqv4qj1k6c73cs4sd0-a/ffdb_zvkc"
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -69,39 +74,43 @@ def home():
 
     form = CustomizeForm()
 
-    # Handle form submission
-    if form.validate_on_submit():
+    if "user_id" in session:
+        # Handle form submission
+        if form.validate_on_submit():
 
-        # Get input data from form
-        location = form.location.data
-        vibe = form.vibe.data
-        gender = form.gender.data
+            # Get input data from form
+            location = form.location.data
+            vibe = form.vibe.data
+            gender = form.gender.data
 
-        # Extract data from response
-        forecast_res = requests.get(f"{BASE_URL}/forecast.json", params={"key": API_KEY, "q": location})
-        forecast_data = forecast_res.json()
-                
-        # Set variables from response data
-        temperature = forecast_data["current"]["temp_f"]
-        city_name = forecast_data["location"]["name"]
-        icon_url = forecast_data["current"]["condition"]["icon"]
-        rain_chance = forecast_data["forecast"]["forecastday"][0]["day"]["daily_chance_of_rain"]
-        humidity = forecast_data["current"]["humidity"]
-        wind_speed = forecast_data["current"]["wind_mph"]
-        region = forecast_data["location"]["region"]
-        country = forecast_data["location"]["country"]
+            # Extract data from response
+            forecast_res = requests.get(f"{BASE_URL}/forecast.json", params={"key": API_KEY, "q": location})
+            forecast_data = forecast_res.json()
+                    
+            # Set variables from response data
+            temperature = forecast_data["current"]["temp_f"]
+            city_name = forecast_data["location"]["name"]
+            icon_url = forecast_data["current"]["condition"]["icon"]
+            rain_chance = forecast_data["forecast"]["forecastday"][0]["day"]["daily_chance_of_rain"]
+            humidity = forecast_data["current"]["humidity"]
+            wind_speed = forecast_data["current"]["wind_mph"]
+            region = forecast_data["location"]["region"]
+            country = forecast_data["location"]["country"]
 
-        # Get image and outfit recommendation in JSON format
-        outfit_recommendation, image_url = get_outfit_recommendation(location, vibe, gender, forecast_data["forecast"]["forecastday"][0]["day"]["daily_will_it_rain"], forecast_data["current"]["temp_f"], forecast_data["current"]["condition"]["text"])
-        outfit_json = json.loads(outfit_recommendation)
+            # Get image and outfit recommendation in JSON format
+            outfit_recommendation, image_url = get_outfit_recommendation(location, vibe, gender, forecast_data["forecast"]["forecastday"][0]["day"]["daily_will_it_rain"], forecast_data["current"]["temp_f"], forecast_data["current"]["condition"]["text"])
+            outfit_json = json.loads(outfit_recommendation)
 
-        return render_template("index.html", form=form, image_url=image_url, region=region, country=country, wind_speed=wind_speed, humidity=humidity, temperature=temperature, city_name=city_name, icon_url=icon_url, rain_chance=rain_chance, outfit=outfit_json)
-    
+            return render_template("index.html", form=form, image_url=image_url, region=region, country=country, wind_speed=wind_speed, humidity=humidity, temperature=temperature, city_name=city_name, icon_url=icon_url, rain_chance=rain_chance, outfit=outfit_json)
+        
     return render_template("index.html", form=form, outfit=example_outfit, region="Somewhere", country="USA", wind_speed=0, humidity=0, temperature=0, city_name="Somewhere", rain_chance=0, icon_url="https://cdn.weatherapi.com/weather/64x64/day/113.png")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     # registration
+
+    if "user_id" in session:
+        return redirect("/")
 
     form = RegisterForm()
 
@@ -110,12 +119,16 @@ def register():
         pwd = form.password.data
 
         user = User.register(username, pwd)
-        db.session.add(user)
-        db.session.commit()
+        try:
+            db.session.add(user)
+            db.session.commit()
 
-        session["user_id"] = user.id
+            session["user_id"] = user.id
 
-        return redirect("/")
+            return redirect("/")
+        except:
+            form.username.errors = ["Username already taken!"]
+            return render_template("register.html", form=form)
     
     else:
         return render_template("register.html", form=form)
@@ -123,6 +136,9 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     # login
+
+    if "user_id" in session:
+        return redirect("/")
 
     form = LoginForm()
 
@@ -132,5 +148,20 @@ def login():
 
         user = User.authenticate(username, pwd)
 
-    else:
-        return render_template("login.html", form=form)
+        if user:
+            session["user_id"] = user.id
+            return redirect("/")
+        
+        else:
+            form.username.errors = ["Incorrect username/password"]
+
+    return render_template("login.html", form=form)
+
+
+@app.route("/logout")
+def logout():
+    if "user_id" in session:
+        session.pop('user_id')
+        return redirect("/")
+    
+    return redirect("/")
