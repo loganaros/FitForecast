@@ -40,3 +40,23 @@ class User(db.Model):
             return user
         else:
             return False
+        
+class Outfit(db.Model):
+    __tablename__ = "outfits"
+
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   autoincrement=True)
+    
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    name = db.Column(db.Text,
+                     nullable=False)
+    
+    outfit_desc = db.Column(db.JSON,
+                            nullable=False)
+    
+    image_url = db.Column(db.Text,
+                          nullable=False)
+    
+    user = db.relationship("User", backref="outfits")

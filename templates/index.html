@@ -91,6 +91,16 @@
             {{ form.submit(class_='btn btn-primary') }}
         </div>
     </form>
+    <div>
+        {% for outfit in saved_outfits %}
+        <h3>{{outfit.name}}</h3>
+        <div class="outfit-recommendation">
+            <div class="outfit-text">
+                {{ outfit.outfit_desc }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
     {% endif %}
     <!-- Skeleton Loader -->
     <div id="loading-skeleton" class="weather-card hidden">
@@ -161,6 +171,19 @@
         <div class="img-container">
             <img class="outfit-image" src="{{ image_url }}">
         </div>
+        {% if show_save_form %}
+        <div>
+            <form method="POST" action="/users/{{ session['user_id'] }}/save-outfit">
+                {{ save_outfit_form.hidden_tag() }}
+                <div class="form-group">
+                    {{ save_outfit_form.name.label }} {{ save_outfit_form.name }}
+                </div>
+                <input type="hidden" name="outfit_data" value="{{ outfit_recommendation }}">
+                <input type="hidden" name="image_url" value="{{ image_url }}">
+                {{ form.submit(class_='btn btn-primary') }}
+            </form>
+        </div>
+        {% endif %}
     </div>
     <div class="button-container">
         {% if 'user_id' not in session %}
